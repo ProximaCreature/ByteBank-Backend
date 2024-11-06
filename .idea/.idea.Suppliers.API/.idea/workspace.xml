@@ -139,7 +139,7 @@
   &quot;keyToString&quot;: {
     &quot;.NET Launch Settings Profile.Suppliers.API: IIS Express.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -222,7 +222,7 @@
       <workItem from="1727318460663" duration="6000" />
       <workItem from="1730261179149" duration="813000" />
       <workItem from="1730262032388" duration="113000" />
-      <workItem from="1730262517735" duration="1477000" />
+      <workItem from="1730262517735" duration="2303000" />
     </task>
     <servers />
   </component>
@@ -250,14 +250,14 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Digitronik.API/Security/Interfaces/REST/Middleware/AuthenticationMiddleware.cs</url>
+          <url>file://$PROJECT_DIR$/ByteBank.API/Security/Interfaces/REST/Middleware/AuthenticationMiddleware.cs</url>
           <line>20</line>
           <properties documentPath="D:\upc\ciclo 7\tuto\Suppliers.API\Suppliers.API\Security\Interfaces\REST\Middleware\AuthenticationMiddleware.cs" containingFunctionPresentation="Method 'Invoke'">
             <startOffsets>
-              <option value="644" />
+              <option value="636" />
             </startOffsets>
             <endOffsets>
-              <option value="704" />
+              <option value="696" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="5" />

@@ -9,5 +9,6 @@ public class RequestToModel : Profile
     public RequestToModel()
     {
         CreateMap<RegisterUserCommand, User>();
+        CreateMap<UpdateUserCommand, User>();
     }
 }

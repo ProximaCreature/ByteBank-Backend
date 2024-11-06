@@ -2,5 +2,8 @@
 
 public record UserResponse(
     int Id,
-    string UserName
+    string UserName,
+    string Email,
+    string FirstName,
+    string LastName
 );

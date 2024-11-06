@@ -64,13 +64,31 @@ public class UserCommandService : IUserCommandService
 
     }
 
-    public Task<UserResponse> Handle(int id, UpdateUserCommand command)
+    public async Task<UserResponse> Handle(int id, UpdateUserCommand command)
     {
-        throw new NotImplementedException();
+        var userToUpdate = await _userRepository.FindByIdAsync(id);
+        if (userToUpdate == null)
+        {
+            throw new NotFoundEntityIdException(nameof(User), id);
+        }
+        _mapper.Map(command, userToUpdate, typeof(UpdateUserCommand), typeof(User));
+        userToUpdate.Password = _encryptService.Encrypt(command.Password);
+        _userRepository.Modify(userToUpdate);
+        await _unitOfWork.CompleteAsync();
+        
+        var userResponse = _mapper.Map<UserResponse>(userToUpdate);
+        return userResponse;
     }
 
-    public Task<bool> Handle(DeleteUserCommand command)
+    public async Task<bool> Handle(DeleteUserCommand command)
     {
-        throw new NotImplementedException();
+        var userToDelete = await _userRepository.FindByIdAsync(command.Id);
+        if (userToDelete == null)
+        {
+            throw new NotFoundEntityIdException(nameof(User), command.Id);
+        }
+        _userRepository.Remove(userToDelete);
+        await _unitOfWork.CompleteAsync();
+        return true;
     }
 }
