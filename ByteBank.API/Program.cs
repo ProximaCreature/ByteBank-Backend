@@ -1,3 +1,4 @@
+using ByteBank.API.BillDiscount;
 using Microsoft.OpenApi.Models;
 using ByteBank.API.Security;
 using ByteBank.API.Security.Interfaces.REST.Middleware;
@@ -41,6 +42,7 @@ builder.Services.AddSwaggerGen(options =>
 
 builder.Services.AddSharedService(builder.Configuration);
 builder.Services.AddSecurityServices();
+builder.Services.AddBillDiscountService();
 
 var app = builder.Build();
 
