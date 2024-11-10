@@ -31,6 +31,7 @@ public class BillCommandService : IBillCommandService
         } 
         
         var billEntity = _mapper.Map<Bill>(command);
+        billEntity.IsDiscounted = false;
         await _billRepository.SaveAsync(billEntity);
         await _unitOfWork.CompleteAsync();
         

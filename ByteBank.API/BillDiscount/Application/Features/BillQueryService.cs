@@ -21,7 +21,7 @@ public class BillQueryService : IBillQueryService
 
     public async Task<IReadOnlyCollection<BillResponse>> Handle(GetAllBillsQuery query)
     {
-        var bills = await _billRepository.FindAllAsync();
+        var bills = await _billRepository.GetNotDiscountedBills();
         var billsResponse = bills
             .Select(_mapper.Map<BillResponse>)
             .ToList()

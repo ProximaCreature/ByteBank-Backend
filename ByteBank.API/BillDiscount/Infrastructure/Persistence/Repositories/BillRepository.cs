@@ -18,4 +18,11 @@ public class BillRepository : BaseRepository<Bill>, IBillRepository
             .Where(b => b.Name == name)
             .FirstOrDefaultAsync();
     }
+
+    public async Task<IReadOnlyCollection<Bill>> GetNotDiscountedBills()
+    {
+        return await Context.Bills
+            .Where(b => b.IsDiscounted == false)
+            .ToListAsync();
+    }
 }

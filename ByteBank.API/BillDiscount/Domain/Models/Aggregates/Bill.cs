@@ -9,4 +9,5 @@ public class Bill : BaseDomainModel
     public required double FaceValue { get; set; }
     public required Currency Currency { get; set; }
     public required DateTime ExpirationDate { get; set; }
+    public required bool IsDiscounted { get; set; }
 }

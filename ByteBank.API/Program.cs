@@ -73,7 +73,7 @@ app.UseMiddleware<ErrorHandlerMiddleware>();
 app.UseMiddleware<AuthenticationMiddleware>();
 
 app.MapControllers();
-
+// link: https://www.e-financebook.com/aplicaciones/e-Book4/Anexos/Cap%2005%20-%20Tasa%20Descontada%20-%20Solucionario%2037.pdf
 // var faceValue = 65850;
 // var tep = FinancialOperation.ConvertToNewTEPFromTEP(0.24, Period.ANUAL, 120);
 // Console.WriteLine(tep);
