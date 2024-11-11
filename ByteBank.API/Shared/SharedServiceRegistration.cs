@@ -13,7 +13,7 @@ public static class SharedServiceRegistration
 
         services.AddDbContext<ServiceDbContext>(options =>
         {
-            options.UseSqlServer(connectionString);
+            options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
         });
       
         services.AddCors(options =>
