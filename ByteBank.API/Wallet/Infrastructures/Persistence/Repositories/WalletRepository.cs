@@ -11,7 +11,6 @@ public class WalletRepository : BaseRepository<Wallets>, IWalletRepository
 {
     public WalletRepository(ServiceDbContext context) : base(context)
     {
-        
     }
     
     public async Task<Wallets> GetWalletByName(string name)

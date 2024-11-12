@@ -44,10 +44,14 @@ public class ServiceDbContext : DbContext
         
         builder.Entity<Wallets>().Property(s => s.Id).ValueGeneratedOnAdd();
         builder.Entity<Wallets>().Property(s => s.NombreCartera).IsRequired().HasMaxLength(30);
+        
+        builder.Entity<Wallets>()
+            .HasMany(w => w.Bills)
+            .WithOne(b => b.Wallets)
+            .HasForeignKey(b => b.WalletId);
     }
     
     public DbSet<User> Users { get; set; }
     public DbSet<Bill> Bills { get; set; }
-    
     public DbSet<Wallets> Wallets { get; set; }
 }

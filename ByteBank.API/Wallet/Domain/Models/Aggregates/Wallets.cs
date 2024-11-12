@@ -1,4 +1,5 @@
-﻿using ByteBank.API.Shared.Domain.Models.Entities;
+﻿using ByteBank.API.BillDiscount.Domain.Models.Aggregates;
+using ByteBank.API.Shared.Domain.Models.Entities;
 
 namespace ByteBank.API.Wallet.Domain.Models.Aggregates;
 
@@ -17,4 +18,6 @@ public class Wallets : BaseDomainModel
     public required decimal PorcentajeSeguroRiesgo { get; set; }
     public required int PlazoOperacion { get; set; }
     public required DateTime FechaDescuento { get; set; }
+    
+    public ICollection<Bill> Bills { get; set; }
 }

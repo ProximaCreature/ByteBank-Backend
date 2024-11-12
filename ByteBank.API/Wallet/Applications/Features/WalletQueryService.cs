@@ -29,4 +29,15 @@ public class WalletQueryService : IWalletQueryService
         var walletResponse = _mapper.Map<WalletResponse>(wallet);
         return walletResponse;
     }
+
+    public async Task<WalletResponse> Handle(GetWalletByNameQuery query)
+    {
+        var wallet = await _walletRepository.GetWalletByName(query.Name);
+        if (wallet == null)
+        {
+            throw new Exception("Wallet not found");
+        }
+        var walletResponse = _mapper.Map<WalletResponse>(wallet);
+        return walletResponse;
+    }
 }

@@ -34,4 +34,13 @@ public class WalletController : ControllerBase
         var result = await _walletQueryService.Handle(query);
         return Ok(result);
     }
+    
+    [HttpGet]
+    [Route("{name}")]
+    public async Task<IActionResult> GetWalletByName([FromRoute] string name)
+    {
+        var query = new GetWalletByNameQuery(name);
+        var result = await _walletQueryService.Handle(query);
+        return Ok(result);
+    }
 }
