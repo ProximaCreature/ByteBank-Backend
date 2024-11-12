@@ -5,5 +5,6 @@ public record BillResponse(
     string Name,
     double FaceValue,
     string Currency,
-    DateTime ExpirationDate
+    DateTime ExpirationDate,
+    int WalletId
 );

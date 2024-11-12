@@ -41,6 +41,10 @@ public class ServiceDbContext : DbContext
         builder.Entity<Bill>().Property(s => s.Id).ValueGeneratedOnAdd();
         builder.Entity<Bill>().Property(s => s.Currency).HasConversion<string>();
         builder.Entity<Bill>().Property(s => s.ExpirationDate).HasColumnType("date");
+        builder.Entity<Bill>()
+            .HasOne(b => b.Wallet)
+            .WithMany(w => w.Bills)
+            .HasForeignKey(b => b.WalletId);
         
         builder.Entity<Wallets>().Property(s => s.Id).ValueGeneratedOnAdd();
         builder.Entity<Wallets>().Property(s => s.NombreCartera).IsRequired().HasMaxLength(30);
