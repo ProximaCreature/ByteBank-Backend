@@ -7,6 +7,7 @@ using ByteBank.API.Security.Interfaces.REST.Middleware;
 using ByteBank.API.Shared;
 using ByteBank.API.Shared.Infrastructure.Persistence.Configuration;
 using ByteBank.API.Shared.Interfaces.REST.Middleware;
+using ByteBank.API.Wallet;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,6 +46,7 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddSharedService(builder.Configuration);
 builder.Services.AddSecurityServices();
 builder.Services.AddBillDiscountService();
+builder.Services.AddWalletService();
 
 var app = builder.Build();
 

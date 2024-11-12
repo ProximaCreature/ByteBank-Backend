@@ -1,6 +1,7 @@
 using ByteBank.API.BillDiscount.Domain.Models.Aggregates;
 using ByteBank.API.Security.Domain.Models.Aggregates;
 using ByteBank.API.Shared.Domain.Models.Entities;
+using ByteBank.API.Wallet.Domain.Models.Aggregates;
 using Microsoft.EntityFrameworkCore;
 
 namespace ByteBank.API.Shared.Infrastructure.Persistence.Configuration;
@@ -40,8 +41,13 @@ public class ServiceDbContext : DbContext
         builder.Entity<Bill>().Property(s => s.Id).ValueGeneratedOnAdd();
         builder.Entity<Bill>().Property(s => s.Currency).HasConversion<string>();
         builder.Entity<Bill>().Property(s => s.ExpirationDate).HasColumnType("date");
+        
+        builder.Entity<Wallets>().Property(s => s.Id).ValueGeneratedOnAdd();
+        builder.Entity<Wallets>().Property(s => s.NombreCartera).IsRequired().HasMaxLength(30);
     }
     
     public DbSet<User> Users { get; set; }
     public DbSet<Bill> Bills { get; set; }
+    
+    public DbSet<Wallets> Wallets { get; set; }
 }
