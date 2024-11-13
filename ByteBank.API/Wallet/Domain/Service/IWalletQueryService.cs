@@ -6,4 +6,6 @@ namespace ByteBank.API.Wallet.Domain.Service;
 public interface IWalletQueryService
 {
     Task<WalletResponse> Handle(GetWalletByIdQuery query);
+    
+    Task<WalletResponse> Handle(GetWalletByNameQuery query);
 }

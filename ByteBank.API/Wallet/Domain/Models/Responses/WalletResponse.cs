@@ -16,4 +16,5 @@ public record WalletResponse
     public decimal ValorEntregado { get; init; }
     public DateTime FechaDescuento { get; init; }
     public int PlazoOperacion { get; init; }
+    public bool HasAssociatedBill { get; init; }
 }

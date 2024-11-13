@@ -13,6 +13,7 @@ namespace ByteBank.API.BillDiscount.Application.Features;
 
 public class BillCommandService : IBillCommandService
 {
+    private readonly IWalletRepository _walletRepository;
     private readonly IBillRepository _billRepository;
     private readonly IWalletRepository _walletRepository;
     private readonly IUnitOfWork _unitOfWork;
@@ -28,6 +29,12 @@ public class BillCommandService : IBillCommandService
     
     public async Task<BillResponse> Handle(CreateBillCommand command)
     {
+        var wallet = await _walletRepository.GetWalletByName(command.NombreCartera);
+        if (wallet == null)
+        {
+            throw new Exception($"Wallet with name not found.");
+        }
+        
         var billInDataBase = await _billRepository.GetBillByName(command.Name);
         Wallets? walletInDatabase = await _walletRepository.FindByIdAsync(command.WalletId);
 
@@ -42,6 +49,7 @@ public class BillCommandService : IBillCommandService
         } 
         
         var billEntity = _mapper.Map<Bill>(command);
+        billEntity.WalletId = wallet.Id;
         billEntity.IsDiscounted = false;
         await _billRepository.SaveAsync(billEntity);
         await _unitOfWork.CompleteAsync();
