@@ -81,7 +81,6 @@ public class Wallets : BaseDomainModel
     }
     public required int PlazoOperacion { get; set; }
     public required DateTime FechaDescuento { get; set; }
-
     public ICollection<Bill> Bills { get; set; } = new List<Bill>();
 
     /*/public decimal NumDias()

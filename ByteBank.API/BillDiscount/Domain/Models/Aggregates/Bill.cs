@@ -14,6 +14,5 @@ public class Bill : BaseDomainModel
     public required Currency Currency { get; set; }
     public required DateTime ExpirationDate { get; set; }
     public required bool IsDiscounted { get; set; }
-    
     public Wallets Wallets { get; set; }
 }
