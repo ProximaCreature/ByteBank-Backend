@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ByteBank.API.BillDiscount.Domain.Models.Responses;
 using ByteBank.API.Shared.Application.Exceptions;
 using ByteBank.API.Wallet.Domain.Models.Aggregates;
 using ByteBank.API.Wallet.Domain.Models.Queries;
@@ -27,6 +28,16 @@ public class WalletQueryService : IWalletQueryService
             throw new NotFoundEntityIdException(nameof(Wallet), query.Id);
         }
         var walletResponse = _mapper.Map<WalletResponse>(wallet);
+        if (wallet.Bills.Any())
+        {
+            walletResponse = walletResponse with
+            {
+                HasAssociatedBill = true,
+                Tcea = wallet.TCEA(),
+                ValorRecibido = wallet.CalcularValorRecibido(),
+                ValorEntregado = wallet.CalcularValorEntregado()
+            };
+        }
         return walletResponse;
     }
 
@@ -38,6 +49,16 @@ public class WalletQueryService : IWalletQueryService
             throw new Exception("Wallet not found");
         }
         var walletResponse = _mapper.Map<WalletResponse>(wallet);
+        if (wallet.Bills.Any())
+        {
+            walletResponse = walletResponse with
+            {
+                HasAssociatedBill = true,
+                Tcea = wallet.TCEA(),
+                ValorRecibido = wallet.CalcularValorRecibido(),
+                ValorEntregado = wallet.CalcularValorEntregado()
+            };
+        }
         return walletResponse;
     }
 }

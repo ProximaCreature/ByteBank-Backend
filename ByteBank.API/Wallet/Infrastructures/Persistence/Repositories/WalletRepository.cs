@@ -17,6 +17,8 @@ public class WalletRepository : BaseRepository<Wallets>, IWalletRepository
     {
         return await Context.Wallets
             .Where(w => w.NombreCartera == name)
+            .Include(w => w.Bills)
             .FirstOrDefaultAsync();
     }
+    
 }
