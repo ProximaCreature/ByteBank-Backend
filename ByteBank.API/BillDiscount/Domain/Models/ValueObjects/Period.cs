@@ -10,5 +10,6 @@ public enum Period
     MENSUAL = 30,
     QUINCENAL = 15,
     SEMANAL = 7,
-    DIARIO = 1
+    DIARIO = 1,
+    NULL = 0
 }

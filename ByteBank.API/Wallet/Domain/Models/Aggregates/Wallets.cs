@@ -1,6 +1,7 @@
 ﻿using ByteBank.API.BillDiscount.Application.Features;
 using ByteBank.API.BillDiscount.Domain.Models.Aggregates;
 using ByteBank.API.BillDiscount.Domain.Models.ValueObjects;
+using ByteBank.API.Security.Domain.Models.Aggregates;
 using ByteBank.API.Shared.Domain.Models.Entities;
 
 namespace ByteBank.API.Wallet.Domain.Models.Aggregates;
@@ -28,6 +29,8 @@ public class Wallets : BaseDomainModel
                 return 2;
             case "mensual":
                 return 1;
+            case "ninguno":
+                return 0;
             default:
                 throw new ArgumentException("Período no reconocido");
         }
@@ -88,10 +91,14 @@ public class Wallets : BaseDomainModel
     public int DiasDespuesDelVencimiento { get; set; }
     public double comisionDePagoTardio { get; set; }
     public string PeriodoTasaMoratorio { get; set; }
-    public double tasaDeInteresMoratorio { get; set; }
+    private double _tasaDeInteresMoratorio;
+    public double tasaDeInteresMoratorio { get => _tasaDeInteresMoratorio; set => _tasaDeInteresMoratorio = value/100; }
     public string TipoTasaInteresMoratorio { get; set; }
     public string PeriodoCapitalizaciondeTasaMoratoria { get; set; }
     public ICollection<Bill> Bills { get; set; } = new List<Bill>();
+    
+    public User User { get; set; }
+    public required int UserId { get; set; }
 
     public double CalcularValorRecibido()
     {
@@ -241,6 +248,8 @@ public class Wallets : BaseDomainModel
                 return Period.MENSUAL;
             case "diaria":
                 return Period.DIARIO;
+            case "ninguno":
+                return Period.NULL;
             default:
                 throw new ArgumentException("Período no reconocido");
         }
