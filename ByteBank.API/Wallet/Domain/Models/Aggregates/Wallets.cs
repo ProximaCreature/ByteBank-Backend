@@ -1,4 +1,6 @@
-﻿using ByteBank.API.BillDiscount.Domain.Models.Aggregates;
+﻿using ByteBank.API.BillDiscount.Application.Features;
+using ByteBank.API.BillDiscount.Domain.Models.Aggregates;
+using ByteBank.API.BillDiscount.Domain.Models.ValueObjects;
 using ByteBank.API.Shared.Domain.Models.Entities;
 
 namespace ByteBank.API.Wallet.Domain.Models.Aggregates;
@@ -6,7 +8,7 @@ namespace ByteBank.API.Wallet.Domain.Models.Aggregates;
 public class Wallets : BaseDomainModel
 {
     public required string NombreCartera { get; set; }
-    public required decimal TasaInteres { get; set; }
+    public required double TasaInteres { get; set; }
     public required string TipoTasaInteres { get; set; }
     public required string PeriodoTasa { get; set; }
     public required string PeriodoCapitalizacion { get; set; }
@@ -31,23 +33,23 @@ public class Wallets : BaseDomainModel
         }
     }
 
-    public decimal CalcularTEA()
+    public double CalcularTEA()
     {
         int periodosPorAnoTasa = DeterminarPeriodosPorAno(PeriodoTasa); 
         int periodosPorAnoCapitalizacion = DeterminarPeriodosPorAno(PeriodoCapitalizacion);
 
-        decimal tasaDecimal = TasaInteres / 100;
+        double tasadouble = TasaInteres / 100;
 
         if (TipoTasaInteres.ToLower() == "nominal")
         {
-            decimal tasaConvertida = tasaDecimal / (periodosPorAnoTasa / periodosPorAnoCapitalizacion);
-            decimal TEA = (decimal)Math.Pow((double)(1 + tasaConvertida), (12/ periodosPorAnoCapitalizacion) - 1);
+            double tasaConvertida = tasadouble / (periodosPorAnoTasa / periodosPorAnoCapitalizacion);
+            double TEA = Math.Pow((1 + tasaConvertida), (12/ periodosPorAnoCapitalizacion) - 1);
             Console.WriteLine($"TEA Calculada desde Tasa Nominal: {TEA * 100}%");
             return TEA;
         }
         else if (TipoTasaInteres.ToLower() == "efectiva")
         {
-            decimal TEA = (decimal)Math.Pow((double)(1 + tasaDecimal), 12/periodosPorAnoTasa) - 1;
+            double TEA = Math.Pow((1 + tasadouble), 12/periodosPorAnoTasa) - 1;
             Console.WriteLine($"TEA Calculada desde Tasa Efectiva: {TEA * 100}%");
             return TEA;
         }
@@ -56,93 +58,42 @@ public class Wallets : BaseDomainModel
             throw new ArgumentException("Tipo de tasa de interés no reconocido");
         }
     }
-    public required decimal ComisionActivacionPorLetra { get; set; }
-    public required decimal Portes { get; set; }
-    private decimal _porcentajeRetencion;
-    public required decimal PorcentajeRetencion
+    public required double ComisionActivacionPorLetra { get; set; }
+    public required double Portes { get; set; }
+    private double _porcentajeRetencion;
+    public required double PorcentajeRetencion
     {
         get => _porcentajeRetencion;
-        set => _porcentajeRetencion = value / 100;  // Convertir a decimal
+        set => _porcentajeRetencion = value / 100;  // Convertir a double
     }
-    public required decimal GastosAdministracion { get; set; }
+    public required double GastosAdministracion { get; set; }
 
-    private decimal _porcentajeSeguroDegravamen;
-    public required decimal PorcentajeSeguroDegravamen
+    private double _porcentajeSeguroDegravamen;
+    public required double PorcentajeSeguroDegravamen
     {
         get => _porcentajeSeguroDegravamen;
-        set => _porcentajeSeguroDegravamen = value / 100;  // Convertir a decimal
+        set => _porcentajeSeguroDegravamen = value / 100;  // Convertir a double
     }
 
-    private decimal _porcentajeSeguroRiesgo;
-    public required decimal PorcentajeSeguroRiesgo
+    private double _porcentajeSeguroRiesgo;
+    public required double PorcentajeSeguroRiesgo
     {
         get => _porcentajeSeguroRiesgo;
-        set => _porcentajeSeguroRiesgo = value / 100;  // Convertir a decimal
+        set => _porcentajeSeguroRiesgo = value / 100;  // Convertir a double
     }
     public required int PlazoOperacion { get; set; }
     public required DateTime FechaDescuento { get; set; }
+    
+    public required bool pagoFueraDeFecha { get; set; }
+    public int DiasDespuesDelVencimiento { get; set; }
+    public double comisionDePagoTardio { get; set; }
+    public string PeriodoTasaMoratorio { get; set; }
+    public double tasaDeInteresMoratorio { get; set; }
+    public string TipoTasaInteresMoratorio { get; set; }
+    public string PeriodoCapitalizaciondeTasaMoratoria { get; set; }
     public ICollection<Bill> Bills { get; set; } = new List<Bill>();
 
-    /*/public decimal NumDias()
-    {
-        if (!Bills.Any(bill => bill.WalletId == Id))
-        {
-            return 0;
-        }
-
-        decimal plazofinal = 0;
-        foreach (var bill in Bills.Where(b => b.WalletId == Id))
-        {
-            var expirationDate = bill.ExpirationDate;
-
-            var dias = (FechaDescuento - expirationDate).Days;
-            plazofinal = PlazoOperacion - dias;
-            Console.WriteLine($"Bill ID: {bill.Id}, Expiration Date: {expirationDate}, Days Difference: {dias}, Plazo Final: {plazofinal}");
-        }
-
-        return plazofinal;
-    }
-    
-    public decimal CalcularDDia()
-    {
-        if (!Bills.Any(bill => bill.WalletId == Id))
-        {
-            return 0;
-        }
-
-        decimal TEC = 0;
-        decimal TECValor = 0;
-        foreach (var bill in Bills.Where(b => b.WalletId == Id))
-        {
-            TEC = (decimal)Math.Pow(1.0 + (double)TasaInteres, (double)NumDias() / 360) - 1;
-            Console.WriteLine($"Bill ID: {bill.Id}, TEC: {TEC}");
-            TECValor = TEC / (1 + TEC);
-            Console.WriteLine($"TEC Valor: {TECValor}");
-        }
-        return TECValor;
-    }
-
-    public decimal CalcularValorNeto()
-    {
-        if (!Bills.Any(bill => bill.WalletId == Id))
-        {
-            return 0;
-        }
-        decimal valorNeto = 0;
-        foreach (var bill in Bills.Where(b => b.WalletId == Id))
-        {
-            var faceValue = bill.FaceValue;
-
-            var Descuento = (decimal)faceValue * CalcularDDia();
-            valorNeto = (decimal)faceValue - (decimal)Descuento;
-            Console.WriteLine($"Bill ID: {bill.Id}, Face Value: {faceValue}, Descuento: {Descuento}, Valor Neto: {valorNeto}");
-
-        }
-
-        return valorNeto;
-    }/*/
-
-    public decimal CalcularValorRecibido()
+    public double CalcularValorRecibido()
     {
         try
         {
@@ -151,33 +102,33 @@ public class Wallets : BaseDomainModel
                 return 0;
             }
 
-            decimal ValorRecibidoTotal = 0;
+            double ValorRecibidoTotal = 0;
             foreach (var bill in Bills.Where(b => b.WalletId == Id))
             {
                 var expirationDate = bill.ExpirationDate;
 
                 var dias = (FechaDescuento - expirationDate).Days;
-                decimal plazofinal = PlazoOperacion - dias;
+                double plazofinal = PlazoOperacion - dias;
                 Console.WriteLine(
                     $"Bill ID: {bill.Id}, Expiration Date: {expirationDate}, Days Difference: {dias}, Plazo Final: {plazofinal}");
 
-                decimal TEACalculo = CalcularTEA();
-                decimal TEC = (decimal)Math.Pow(1.0 + (double)TEACalculo, (double)plazofinal / 360) - 1;
+                double TEACalculo = CalcularTEA();
+                double TEC = Math.Pow(1.0 + TEACalculo, plazofinal / 360) - 1;
                 Console.WriteLine($"Bill ID: {bill.Id}, TEC: {TEC}");
-                decimal TECValor = TEC / (1 + TEC);
+                double TECValor = TEC / (1 + TEC);
                 Console.WriteLine($"TEC Valor: {TECValor}");
 
                 var faceValue = bill.FaceValue;
 
-                var Descuento = (decimal)faceValue * TECValor;
-                decimal valorNeto = (decimal)faceValue - (decimal)Descuento;
+                var Descuento = faceValue * TECValor;
+                double valorNeto = faceValue - Descuento;
                 Console.WriteLine(
                     $"Bill ID: {bill.Id}, Face Value: {faceValue}, Descuento: {Descuento}, Valor Neto: {valorNeto}");
 
                 var ValorRecibido = valorNeto - ComisionActivacionPorLetra -
-                                    ((decimal)faceValue * PorcentajeSeguroRiesgo) -
-                                    ((decimal)faceValue * PorcentajeSeguroDegravamen) -
-                                    ((decimal)faceValue * PorcentajeRetencion);
+                                    (faceValue * PorcentajeSeguroRiesgo) -
+                                    (faceValue * PorcentajeSeguroDegravamen) -
+                                    (faceValue * PorcentajeRetencion);
                 ValorRecibidoTotal += ValorRecibido;
                 Console.WriteLine($"Bill ID: {bill.Id}, Face Value: {faceValue}, Valor Recibido: {ValorRecibido}");
             }
@@ -192,19 +143,19 @@ public class Wallets : BaseDomainModel
         }
     }
 
-    public decimal CalcularValorEntregado()
+    public double CalcularValorEntregado()
     {
         if (!Bills.Any(bill => bill.WalletId == Id))
         {
             return 0;
         }
 
-        decimal ValorEntregadoTotal = 0;
+        double ValorEntregadoTotal = 0;
         foreach (var bill in Bills.Where(b => b.WalletId == Id))
         {
             var faceValue = bill.FaceValue;
-            var ValorEntregado = (decimal)faceValue + GastosAdministracion + Portes -
-                                 ((decimal)faceValue * PorcentajeRetencion);
+            var ValorEntregado = faceValue + GastosAdministracion + Portes -
+                                 (faceValue * PorcentajeRetencion);
             ValorEntregadoTotal += ValorEntregado;
             Console.WriteLine($"Bill ID: {bill.Id}, Face Value: {faceValue}, Valor Entregado: {ValorEntregado}");
 
@@ -213,15 +164,95 @@ public class Wallets : BaseDomainModel
         return ValorEntregadoTotal;
     }
 
-    public decimal TCEA()
+    public double CalcularValorEntregadoConMora()
+    {
+        if (!Bills.Any(bill => bill.WalletId == Id))
+        {
+            return 0;
+        }
+        
+        Period periodoTasaMoratorio = toPeriodEnumFromString(PeriodoTasaMoratorio);
+        Period periodoCapitalizaciondeTasaMoratorio = toPeriodEnumFromString(PeriodoCapitalizaciondeTasaMoratoria);
+        
+        //Convirtiendo tasa nominal a tasa efectiva
+        if (TipoTasaInteresMoratorio.ToLower() == "nominal")
+        {
+            tasaDeInteresMoratorio = FinancialOperation.ConvertToNewTEPFromTN(tasaDeInteresMoratorio, periodoTasaMoratorio, (int) periodoTasaMoratorio, periodoCapitalizaciondeTasaMoratorio);
+        }
+
+        double ValorEntregadoTotal = 0;
+        foreach (var bill in Bills.Where(b => b.WalletId == Id))
+        {
+            var interesCompensatorio = FinancialOperation.CalculateCompensatoryInterest(
+                bill.FaceValue,
+                TasaInteres,
+                toPeriodEnumFromString(PeriodoTasa),
+                DiasDespuesDelVencimiento
+            );
+
+            var interesMoratorio = FinancialOperation.CalculateMoratoriumInterest(
+                bill.FaceValue,
+                tasaDeInteresMoratorio,
+                periodoTasaMoratorio,
+                DiasDespuesDelVencimiento
+            );
+            var gastosTotales = comisionDePagoTardio + interesMoratorio + interesCompensatorio + GastosAdministracion + Portes;
+            
+            var valorEntregado = FinancialOperation.CalculateDeliveredValue(
+                bill.FaceValue,
+                gastosTotales,
+                _porcentajeRetencion
+            );
+            
+            ValorEntregadoTotal += valorEntregado;
+        }
+        
+        return ValorEntregadoTotal;
+    }
+
+    public double TCEAconMora()
     {
         if (!Bills.Any(bill => bill.WalletId == Id))
         {
             return 0;
         }
 
-        var ValorTCEA = Math.Pow((double)(CalcularValorEntregado() / CalcularValorRecibido()), (360 / PlazoOperacion)) - 1;
+        var PlazoOperacionTardio = PlazoOperacion + DiasDespuesDelVencimiento;
+        var ValorTCEA = Math.Pow((CalcularValorEntregadoConMora() / CalcularValorRecibido()), (360 / PlazoOperacionTardio)) - 1;
         Console.WriteLine($"TCEA: {ValorTCEA}");
-        return (decimal)ValorTCEA;
+        return ValorTCEA;
+    }
+
+    public Period toPeriodEnumFromString(string periodo)
+    {
+        switch (periodo.ToLower())
+        {
+            case "anual":
+                return Period.ANUAL;
+            case "semestral":
+                return Period.SEMESTRAL;
+            case "cuatrimestral":
+                return Period.CUATRIMESTRAL;
+            case "trimestral":
+                return Period.TRIMESTRAL;
+            case "bimestral":
+                return Period.BIMESTRAL;
+            case "mensual":
+                return Period.MENSUAL;
+            default:
+                throw new ArgumentException("Período no reconocido");
+        }
+    }
+
+    public double TCEA()
+    {
+        if (!Bills.Any(bill => bill.WalletId == Id))
+        {
+            return 0;
+        }
+
+        var ValorTCEA = Math.Pow((CalcularValorEntregado() / CalcularValorRecibido()), (360 / PlazoOperacion)) - 1;
+        Console.WriteLine($"TCEA: {ValorTCEA}");
+        return ValorTCEA;
     }
 }

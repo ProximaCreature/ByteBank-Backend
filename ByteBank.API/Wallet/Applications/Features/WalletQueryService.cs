@@ -33,9 +33,9 @@ public class WalletQueryService : IWalletQueryService
             walletResponse = walletResponse with
             {
                 HasAssociatedBill = true,
-                Tcea = wallet.TCEA(),
+                Tcea = wallet.pagoFueraDeFecha? wallet.TCEA() : wallet.TCEAconMora(),
                 ValorRecibido = wallet.CalcularValorRecibido(),
-                ValorEntregado = wallet.CalcularValorEntregado()
+                ValorEntregado = wallet.pagoFueraDeFecha? wallet.CalcularValorEntregadoConMora() : wallet.CalcularValorEntregado() 
             };
         }
         return walletResponse;
@@ -54,9 +54,9 @@ public class WalletQueryService : IWalletQueryService
             walletResponse = walletResponse with
             {
                 HasAssociatedBill = true,
-                Tcea = wallet.TCEA(),
+                Tcea = wallet.pagoFueraDeFecha? wallet.TCEA() : wallet.TCEAconMora(),
                 ValorRecibido = wallet.CalcularValorRecibido(),
-                ValorEntregado = wallet.CalcularValorEntregado()
+                ValorEntregado = wallet.pagoFueraDeFecha? wallet.CalcularValorEntregadoConMora() : wallet.CalcularValorEntregado() 
             };
         }
         return walletResponse;

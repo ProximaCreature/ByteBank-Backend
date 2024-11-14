@@ -42,7 +42,7 @@ public class ServiceDbContext : DbContext
         builder.Entity<Bill>().Property(s => s.Currency).HasConversion<string>();
         builder.Entity<Bill>().Property(s => s.ExpirationDate).HasColumnType("date");
         builder.Entity<Bill>()
-            .HasOne(b => b.Wallet)
+            .HasOne(b => b.Wallets)
             .WithMany(w => w.Bills)
             .HasForeignKey(b => b.WalletId);
         

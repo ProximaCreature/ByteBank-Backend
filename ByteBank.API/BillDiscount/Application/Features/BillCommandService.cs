@@ -13,7 +13,6 @@ namespace ByteBank.API.BillDiscount.Application.Features;
 
 public class BillCommandService : IBillCommandService
 {
-    private readonly IWalletRepository _walletRepository;
     private readonly IBillRepository _billRepository;
     private readonly IWalletRepository _walletRepository;
     private readonly IUnitOfWork _unitOfWork;
