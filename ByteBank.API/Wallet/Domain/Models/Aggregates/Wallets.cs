@@ -239,6 +239,8 @@ public class Wallets : BaseDomainModel
                 return Period.BIMESTRAL;
             case "mensual":
                 return Period.MENSUAL;
+            case "diaria":
+                return Period.DIARIO;
             default:
                 throw new ArgumentException("Período no reconocido");
         }
