@@ -23,7 +23,7 @@ public class WalletQueryService : IWalletQueryService
         _userRepository = userRepository;
         _mapper = mapper;
     }
-    
+
     public async Task<WalletResponse> Handle(GetWalletByIdQuery query)
     {
         var wallet = await _walletRepository.FindByIdAsync(query.Id);
@@ -31,17 +31,21 @@ public class WalletQueryService : IWalletQueryService
         {
             throw new NotFoundEntityIdException(nameof(Wallet), query.Id);
         }
+
         var walletResponse = _mapper.Map<WalletResponse>(wallet);
         if (wallet.Bills.Any())
         {
             walletResponse = walletResponse with
             {
                 HasAssociatedBill = true,
-                Tcea = wallet.pagoFueraDeFecha? wallet.TCEAconMora() : wallet.TCEA(),
+                Tcea = wallet.pagoFueraDeFecha ? wallet.TCEAconMora() : wallet.TCEA(),
                 ValorRecibido = wallet.CalcularValorRecibido(),
-                ValorEntregado = wallet.pagoFueraDeFecha? wallet.CalcularValorEntregadoConMora() : wallet.CalcularValorEntregado() 
+                ValorEntregado = wallet.pagoFueraDeFecha
+                    ? wallet.CalcularValorEntregadoConMora()
+                    : wallet.CalcularValorEntregado()
             };
         }
+
         return walletResponse;
     }
 
@@ -52,17 +56,29 @@ public class WalletQueryService : IWalletQueryService
         {
             throw new Exception("Wallet not found");
         }
+
         var walletResponse = _mapper.Map<WalletResponse>(wallet);
         if (wallet.Bills.Any())
         {
             walletResponse = walletResponse with
             {
                 HasAssociatedBill = true,
-                Tcea = wallet.pagoFueraDeFecha? wallet.TCEAconMora() : wallet.TCEA(),
+                Tcea = wallet.pagoFueraDeFecha ? wallet.TCEAconMora() : wallet.TCEA(),
                 ValorRecibido = wallet.CalcularValorRecibido(),
-                ValorEntregado = wallet.pagoFueraDeFecha? wallet.CalcularValorEntregadoConMora() : wallet.CalcularValorEntregado() 
+                ValorEntregado = wallet.pagoFueraDeFecha
+                    ? wallet.CalcularValorEntregadoConMora()
+                    : wallet.CalcularValorEntregado(),
+                Bills = wallet.Bills.Select(b => new BillResponse(
+                    b.Id,
+                    b.Name,
+                    b.FaceValue,
+                    b.Currency.ToString(),
+                    b.ExpirationDate,
+                    b.WalletId
+                )).ToList()
             };
         }
+
         return walletResponse;
     }
 
