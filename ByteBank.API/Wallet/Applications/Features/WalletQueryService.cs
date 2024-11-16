@@ -84,7 +84,7 @@ public class WalletQueryService : IWalletQueryService
 
     public async Task<List<WalletResponse>> Handle(GetAllWalletsByUserId query)
     {
-        var userInDatabase = _userRepository.FindByIdAsync(query.UserId);
+        var userInDatabase = await _userRepository.FindByIdAsync(query.UserId);
 
         if (userInDatabase == null)
         {
