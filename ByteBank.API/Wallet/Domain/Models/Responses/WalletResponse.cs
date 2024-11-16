@@ -1,4 +1,6 @@
-﻿namespace ByteBank.API.Wallet.Domain.Models.Responses;
+﻿using ByteBank.API.BillDiscount.Domain.Models.Responses;
+
+namespace ByteBank.API.Wallet.Domain.Models.Responses;
 public record WalletResponse
 {
     public WalletResponse() { }
@@ -17,4 +19,6 @@ public record WalletResponse
     public DateTime FechaDescuento { get; init; }
     public int PlazoOperacion { get; init; }
     public bool HasAssociatedBill { get; init; }
+    public List<BillResponse> Bills { get; init; } = new();
+
 }
