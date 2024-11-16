@@ -2,6 +2,8 @@
 using ByteBank.API.Security.Domain.Models.Commands;
 using ByteBank.API.Security.Domain.Models.Queries;
 using ByteBank.API.Security.Domain.Services;
+using ByteBank.API.Wallet.Domain.Models.Queries;
+using ByteBank.API.Wallet.Domain.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,12 +15,14 @@ namespace ByteBank.API.Security.Interfaces.REST;
 public class UserController : ControllerBase
 {
     private readonly IUserCommandService _userCommandService;
+    private readonly IWalletQueryService _walletQueryService;
     private readonly IUserQueryService _userQueryService;
 
-    public UserController(IUserCommandService userCommandService, IUserQueryService userQueryService)
+    public UserController(IUserCommandService userCommandService, IUserQueryService userQueryService, IWalletQueryService walletQueryService)
     {
         _userCommandService = userCommandService;
         _userQueryService = userQueryService;
+        _walletQueryService = walletQueryService;
     }
 
     [HttpGet]
@@ -27,6 +31,15 @@ public class UserController : ControllerBase
     {
         var query = new GetUserByIdQuery(id);
         var result = await _userQueryService.Handle(query);
+        return Ok(result);
+    }
+    
+    [HttpGet]
+    [Route("{id:int}/wallets")]
+    public async Task<IActionResult> GetWalletsByUserId([FromRoute] int id)
+    {
+        var query = new GetAllWalletsByUserId(id);
+        var result = await _walletQueryService.Handle(query);
         return Ok(result);
     }
     
