@@ -28,6 +28,8 @@ public class Wallets : BaseDomainModel
                 return 2;
             case "mensual":
                 return 1;
+            case "ninguno":
+                return 0;
             default:
                 throw new ArgumentException("Período no reconocido");
         }
