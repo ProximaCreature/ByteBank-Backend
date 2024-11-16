@@ -11,7 +11,7 @@ namespace ByteBank.API.Security.Application.Features;
 public class TokenService : ITokenService
 {
     private readonly string _key = "3a8f9c3e-6b4f-4b68-ae1e-284ba324dbfe";
-    private readonly int _durationInMinutes = 360;
+    private readonly int _durationInMinutes = 4320;
     
     public string GenerateToken(User user)
     {

@@ -27,7 +27,7 @@ public class UserCommandService : IUserCommandService
         _unitOfWork = unitOfWork;
     }
     
-    public async Task<string> Handle(LoginUserCommand command)
+    public async Task<LoginResponse> Handle(LoginUserCommand command)
     {
         var userInDatabase = await _userRepository.GetUserByUsernameAsync(command.Username);
 
@@ -40,8 +40,14 @@ public class UserCommandService : IUserCommandService
         {
             throw new IncorrectPasswordException();
         }
+
+        var loginResponse = new LoginResponse(
+            userInDatabase.Id,
+            userInDatabase.Username,
+            _tokenService.GenerateToken(userInDatabase)
+        );
         
-        return _tokenService.GenerateToken(userInDatabase);
+        return loginResponse;
     }
 
     public async Task<UserResponse> Handle(RegisterUserCommand command)

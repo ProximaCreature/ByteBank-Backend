@@ -20,5 +20,12 @@ public class WalletRepository : BaseRepository<Wallets>, IWalletRepository
             .Include(w => w.Bills)
             .FirstOrDefaultAsync();
     }
-    
+
+    public async Task<List<Wallets>> GetAllWalletsByUserId(int userId)
+    {
+        return await Context.Wallets
+            .Where(w => w.UserId == userId)
+            .Include(w => w.Bills)
+            .ToListAsync();
+    }
 }

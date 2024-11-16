@@ -8,4 +8,6 @@ public interface IWalletQueryService
     Task<WalletResponse> Handle(GetWalletByIdQuery query);
     
     Task<WalletResponse> Handle(GetWalletByNameQuery query);
+    
+    Task<List<WalletResponse>> Handle(GetAllWalletsByUserId query);
 }
