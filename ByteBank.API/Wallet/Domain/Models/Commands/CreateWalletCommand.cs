@@ -3,6 +3,7 @@
 namespace ByteBank.API.Wallet.Domain.Models.Commands;
 
 public record CreateWalletCommand(
+    [Required] [MinLength(1, ErrorMessage = "Nombre de Username cannot be empty")] string Username,
     [Required] [MinLength(1, ErrorMessage = "Nombre de Cartera cannot be empty")] string NombreCartera,
     [Required] double TasaInteres,
     [Required] [MinLength(1, ErrorMessage = "Tipo de Tasa de Interés cannot be empty")] string TipoTasaInteres,
