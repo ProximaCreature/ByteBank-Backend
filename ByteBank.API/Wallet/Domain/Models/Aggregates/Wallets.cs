@@ -192,17 +192,21 @@ public class Wallets : BaseDomainModel
         {
             var interesCompensatorio = FinancialOperation.CalculateCompensatoryInterest(
                 bill.FaceValue,
-                TasaInteres,
+                TasaInteres/100d,
                 toPeriodEnumFromString(PeriodoTasa),
                 DiasDespuesDelVencimiento
             );
-
+            
+            Console.WriteLine("Valor interes compensatorio: "+interesCompensatorio);
+            
             var interesMoratorio = FinancialOperation.CalculateMoratoriumInterest(
                 bill.FaceValue,
-                tasaDeInteresMoratorio,
+                tasaDeInteresMoratorio*100d,
                 periodoTasaMoratorio,
                 DiasDespuesDelVencimiento
             );
+            
+            Console.WriteLine("Valor interes moratorio: "+interesMoratorio);
             var gastosTotales = comisionDePagoTardio + interesMoratorio + interesCompensatorio + GastosAdministracion + Portes;
             
             var valorEntregado = FinancialOperation.CalculateDeliveredValue(
@@ -210,7 +214,7 @@ public class Wallets : BaseDomainModel
                 gastosTotales,
                 _porcentajeRetencion
             );
-            
+            Console.WriteLine("Valor entregado: "+valorEntregado);
             ValorEntregadoTotal += valorEntregado;
         }
         
@@ -225,7 +229,7 @@ public class Wallets : BaseDomainModel
         }
 
         var PlazoOperacionTardio = PlazoOperacion + DiasDespuesDelVencimiento;
-        var ValorTCEA = Math.Pow((CalcularValorEntregadoConMora() / CalcularValorRecibido()), (360 / PlazoOperacionTardio)) - 1;
+        var ValorTCEA = Math.Pow(CalcularValorEntregadoConMora() / CalcularValorRecibido(), (360d / PlazoOperacionTardio)) - 1;
         Console.WriteLine($"TCEA: {ValorTCEA}");
         return ValorTCEA;
     }
@@ -262,7 +266,7 @@ public class Wallets : BaseDomainModel
             return 0;
         }
 
-        var ValorTCEA = Math.Pow((CalcularValorEntregado() / CalcularValorRecibido()), (360 / PlazoOperacion)) - 1;
+        var ValorTCEA = Math.Pow((CalcularValorEntregado() / CalcularValorRecibido()), (360d / PlazoOperacion)) - 1;
         Console.WriteLine($"TCEA: {ValorTCEA}");
         return ValorTCEA;
     }
